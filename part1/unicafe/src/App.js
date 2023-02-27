@@ -12,10 +12,12 @@ const Header = (props) => (
 )
 
 const Statistics = (props) => {
-  
+
   const total = props.good + props.bad + props.neutral
   const avg = ((props.good * 1 + props.bad * -1) / total) % 1
   const percentage = props.good * 100 / total
+
+  if (total === 0) return(<div>No feedback given</div>)
 
   return (
     
