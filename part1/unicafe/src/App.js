@@ -11,9 +11,25 @@ const Header = (props) => (
   <h1>{props.text}</h1>
 )
 
-const Counter = (props) => (
-  <div>{props.text} {props.display}</div>
-)
+const Statistics = (props) => {
+  
+  const total = props.good + props.bad + props.neutral
+  const avg = ((props.good * 1 + props.bad * -1) / total) % 1
+  const percentage = props.good * 100 / total
+
+  return (
+    
+    <>
+     <div>{'good'} {props.good}</div>
+     <div>{'neutral'} {props.neutral}</div>
+     <div>{'bad'} {props.bad}</div>
+     <div>{'all'} {total}</div>
+     <div>{'average'} {avg}</div>
+     <div>{'positive'} {percentage + ' %'}</div>
+    </>
+  )
+    
+  }
 
 
 const App = () => {
@@ -21,24 +37,20 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
-  // log specific feedback value (1, 0, -1) to an array for average calculation
-  const [average, setAverage] = useState([])
+
 
   
   // click handlers
   const feedbackGood = () => {
     setGood(good + 1)
-    setAverage(average.concat(1))
   }
 
   const feedbackNeutral = () => {
     setNeutral(neutral + 1)
-    setAverage(average.concat(0))
   }
 
   const feedbackBad = () => {
     setBad(bad + 1)
-    setAverage(average.concat(-1))
   }
 
 
@@ -49,12 +61,7 @@ const App = () => {
       <Button handleClick={feedbackNeutral} text={'neutral'}/> 
       <Button handleClick={feedbackBad} text={'bad'}/> 
       <Header text={'statistics'}/>
-      <Counter text={'good'} display={good}/>
-      <Counter text={'neutral'} display={neutral}/>
-      <Counter text={'bad'} display={bad}/>
-      <Counter text={'all'} display={good + bad + neutral}/>
-      <Counter text={'average'} display={average.reduce((acc, c) => acc + c, 0) / average.length}/>
-      <Counter text={'positive'} display={good * 100 / (bad + good + neutral) + ' %'}/>
+      <Statistics good={good} neutral={neutral} bad={bad} />
       
     </div>
   )
