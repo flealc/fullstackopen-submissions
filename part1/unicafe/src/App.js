@@ -11,6 +11,12 @@ const Header = (props) => (
   <h1>{props.text}</h1>
 )
 
+const StatisticLine = (props) => {
+  return(
+  <div>{props.text} {props.value}</div>
+  )
+}
+
 const Statistics = (props) => {
 
   const total = props.good + props.bad + props.neutral
@@ -20,14 +26,13 @@ const Statistics = (props) => {
   if (total === 0) return(<div>No feedback given</div>)
 
   return (
-    
     <>
-     <div>{'good'} {props.good}</div>
-     <div>{'neutral'} {props.neutral}</div>
-     <div>{'bad'} {props.bad}</div>
-     <div>{'all'} {total}</div>
-     <div>{'average'} {avg}</div>
-     <div>{'positive'} {percentage + ' %'}</div>
+     <StatisticLine text={'good'} value={props.good}/>
+     <StatisticLine text={'neutral'} value={props.neutral}/>
+     <StatisticLine text={'bad'} value={props.bad}/>
+     <StatisticLine text={'all'} value={total}/>
+     <StatisticLine text={'average'} value={avg}/>
+     <StatisticLine text={'positive'} value={percentage + ' %'}/>
     </>
   )
     
