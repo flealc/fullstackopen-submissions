@@ -1,7 +1,7 @@
 
 const Person = (props) =>
 <div>
-    {props.name}
+    {props.person.name} {props.person.number}
 </div>
 
 export default Person
