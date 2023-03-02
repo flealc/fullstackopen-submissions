@@ -52,6 +52,8 @@ const App = () => {
                   value={filter} 
                 />
         </div>
+      <h2>add a new</h2>
+      
       <form onSubmit={addName}>
         <div>
           name: <input 
