@@ -32,10 +32,17 @@ useEffect(() => {
 
   const addName = (event) => {
     event.preventDefault()
-    if (persons.filter(person => person.name === newName).length !== 0) {
-      alert(`${newName} is already added to phonebook`)
+    const filteredPersons = persons.filter(person => person.name === newName)
+    if (filteredPersons.length !== 0) {
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        updatePerson(filteredPersons[0])
+      }
+      else {
+        setNewName('')
+        setNewNumber('')
+      }
     } 
-    else { 
+    else {
       const nameObject = {
         name: newName,
         number: newNumber,
@@ -48,7 +55,7 @@ useEffect(() => {
           setNewName('')
           setNewNumber('')
         })
-    }
+      }
   }
 
   const deletePerson = (id, name) => {
@@ -56,6 +63,19 @@ useEffect(() => {
       personService.remove(id)
       setPersons(persons.filter(n => n.id !== id))
     }
+  }
+
+  const updatePerson = (person) => {
+    
+      const changedPerson = { ...person, number: newNumber}
+      personService
+        .update(person.id, changedPerson)
+        .then(returnedPerson => {
+          setPersons(persons.map(p => p.id === person.id ? returnedPerson : p))
+          setNewName('')
+          setNewNumber('')
+        })
+      
   }
 
   return (
