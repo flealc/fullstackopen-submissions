@@ -51,6 +51,13 @@ useEffect(() => {
     }
   }
 
+  const deletePerson = (id, name) => {
+    if (window.confirm(`Delete ${name} ?`)) {
+      personService.remove(id)
+      setPersons(persons.filter(n => n.id !== id))
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -64,7 +71,7 @@ useEffect(() => {
         newNumber={newNumber}
       />
       <h2>Numbers</h2>
-      <Persons filter={filter} persons={persons}/>
+      <Persons filter={filter} persons={persons} deleteHandler={deletePerson}/>
     </div>
   )
 }
