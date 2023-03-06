@@ -1,7 +1,7 @@
 
-const Country = ({ display }) => {
+const Country = ({ display, setDisplay }) => {
 
-
+    
     if (!display) {
         return null
     }
@@ -17,12 +17,18 @@ const Country = ({ display }) => {
     }
 
     if (display.length <= 10 && display.length > 1) {
+        const handleButton = (c) => {
+            const showCountry = [c]
+            setDisplay(showCountry)
+        }
+    
         
         return (
             <>
                 {display.map(c => 
                     <div key={c.name.common}>
                         {c.name.common}
+                        <button onClick={() => handleButton(c)}>show</button>
                     </div>
                 )}
 

@@ -36,7 +36,7 @@ const App = () => {
   return (
     <>
       find countries  <input onChange={handleInput} value={value} /> 
-      <Country display={display}/>
+      <Country display={display} setDisplay={setDisplay}/>
     </>
   )
 }
