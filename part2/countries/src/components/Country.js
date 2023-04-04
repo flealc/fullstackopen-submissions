@@ -1,9 +1,7 @@
 
 import Weather from './Weather'
 
-
 const Country = ({ display, setDisplay, weatherInfo, setWeatherInfo}) => {
-    
     
     
     if (!display) {
@@ -55,9 +53,6 @@ const Country = ({ display, setDisplay, weatherInfo, setWeatherInfo}) => {
                 <Weather capital={display[0].capital} />
             </>
         )
-       
-        
-
        
     }
 

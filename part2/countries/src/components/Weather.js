@@ -5,7 +5,6 @@ const Weather = ({capital}) => {
     const [weatherInfo, setWeatherInfo] = useState(null)
     const api_key= process.env.REACT_APP_API_KEY
     
-
     
     useEffect(() => {
         
@@ -18,7 +17,6 @@ const Weather = ({capital}) => {
         }) 
     }, [api_key, capital])
    
-
 
     if (weatherInfo !== null) {
 
