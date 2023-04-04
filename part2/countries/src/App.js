@@ -2,11 +2,11 @@ import {useState, useEffect} from 'react'
 import axios from 'axios'
 import Country from './components/Country'
 const App = () => {
-  
+
+
   const [value, setValue] = useState('')
   const [countries, setCountries] = useState(null)
   const [display, setDisplay] = useState(null)
-
   
   
   const handleInput = (event) => {

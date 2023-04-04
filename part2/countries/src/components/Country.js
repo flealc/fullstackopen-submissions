@@ -1,13 +1,16 @@
 
-const Country = ({ display, setDisplay }) => {
+import Weather from './Weather'
 
+
+const Country = ({ display, setDisplay, weatherInfo, setWeatherInfo}) => {
+    
+    
     
     if (!display) {
         return null
     }
 
     if (display.length > 10) {
-        
         return (
             <>
                 <div>Too many matches, specify another filter</div>
@@ -37,7 +40,7 @@ const Country = ({ display, setDisplay }) => {
     }
 
     if (display.length === 1) {
-        
+
         return (
             <>
                 <h1>{display[0].name.common}</h1>
@@ -49,8 +52,13 @@ const Country = ({ display, setDisplay }) => {
                     <li key={display[0].languages[key]}>{display[0].languages[key]}</li>)}
                 </ul>
                 <img src={display[0].flags.png} alt="country flag"></img>
+                <Weather capital={display[0].capital} />
             </>
         )
+       
+        
+
+       
     }
 
 }
