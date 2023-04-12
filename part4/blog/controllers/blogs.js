@@ -44,14 +44,14 @@ blogsRouter.delete('/:id', (request, response, next) => {
 
 
 blogsRouter.put('/:id', (request, response, next) => {
-  const { title, author, url, likes} = request.body
-  
+  const { title, author, url, likes } = request.body
+
 
   Blog
     .findByIdAndUpdate(
-      request.params.id, 
-      { title, author, url, likes }, 
-      {new: true, runValidators: true, context: 'query'})
+      request.params.id,
+      { title, author, url, likes },
+      { new: true, runValidators: true, context: 'query' })
     .then(updatedBlog => {
       response.json(updatedBlog)
     })
