@@ -52,6 +52,163 @@ const listWithFourBlogs = [
 
 const bothArePopular = listWithOneBlog.concat(listWithFourBlogs[0], {})
 
+const listWithManyBlogs = [
+  {
+    title: 'The Catcher in the Rye',
+    author: 'J.D. Salinger',
+    url: 'https://www.example.com/catcher',
+    likes: 456,
+    id: 'm9n8b7v6c5x4z3a2s1d0f'
+  },
+  {
+    title: 'To Kill a Mockingbird',
+    author: 'Harper Lee',
+    url: 'https://www.example.com/mockingbird',
+    likes: 789,
+    id: 'q1w2e3r4t5y6u7i8o9p0a1s'
+  },
+  {
+    title: 'The Great Gatsby',
+    author: 'F. Scott Fitzgerald',
+    url: 'https://www.example.com/gatsby',
+    likes: 234,
+    id: 'z2x3c4v5b6n7m8l9k0j1h'
+  },
+  {
+    title: '1984',
+    author: 'George Orwell',
+    url: 'https://www.example.com/1984',
+    likes: 567,
+    id: 'p0o9i8u7y6t5r4e3w2q1a'
+  },
+  {
+    title: 'The Hobbit',
+    author: 'J.R.R. Tolkien',
+    url: 'https://www.example.com/hobbit',
+    likes: 890,
+    id: 'y1u2i3o4p5a6s7d8f9g0h'
+  },
+  {
+    title: 'Pride and Prejudice',
+    author: 'Jane Austen',
+    url: 'https://www.example.com/pride',
+    likes: 345,
+    id: 'l1k2j3h4g5f6d7s8a9p0o'
+  },
+  {
+    title: 'The Alchemist',
+    author: 'Paulo Coelho',
+    url: 'https://www.example.com/alchemist',
+    likes: 678,
+    id: 'b1v2n3m4q5w6e7r8t9y0u'
+  },
+  {
+    title: 'The Lord of the Rings',
+    author: 'J.R.R. Tolkien',
+    url: 'https://www.example.com/lotr',
+    likes: 1234,
+    id: 'h1j2k3l4m5n6b7v8c9x0z'
+  },
+  {
+    title: 'The Hunger Games',
+    author: 'Suzanne Collins',
+    url: 'https://www.example.com/hunger',
+    likes: 5678,
+    id: 'g1f2d3s4a5p6o7i8u9y0t'
+  },
+  {
+    title: 'Harry Potter and the Sorcerer\'s Stone',
+    author: 'J.K. Rowling',
+    url: 'https://www.example.com/harry',
+    likes: 9012,
+    id: 'r1e2w3q4t5y6u7i8o9p0a'
+  },
+  {
+    title: 'The Chronicles of Narnia',
+    author: 'C.S. Lewis',
+    url: 'https://www.example.com/narnia',
+    likes: 3456,
+    id: 'x1c2v3b4n5m6l7k8j9h0g'
+  },
+  {
+    title: 'The Da Vinci Code',
+    author: 'Dan Brown',
+    url: 'https://www.example.com/davinci',
+    likes: 7890,
+    id: 'a1s2d3f4g5h6j7k8l9z0x'
+  },
+  {
+    title: 'The Girl with the Dragon Tattoo',
+    author: 'Stieg Larsson',
+    url: 'https://www.example.com/girl',
+    likes: 2345,
+    id: 'q1w2e3r4t5y6u7i8o9p0a'
+  },
+  {
+    title: 'The Hitchhiker\'s Guide to the Galaxy',
+    author: 'Douglas Adams',
+    url: 'https://www.example.com/hitchhiker',
+    likes: 6789,
+    id: 's1d2f3g4h5j6k7l8z9x0c'
+  },
+  {
+    title: 'The Shining',
+    author: 'Stephen King',
+    url: 'https://www.example.com/shining',
+    likes: 12345,
+    id: 'r1t2y3e4w5q6u7i8o9p0a'
+  },
+  {
+    title: 'Franny and Zooey',
+    author: 'J.D. Salinger',
+    url: 'https://www.example.com/franny',
+    likes: 456,
+    id: 'u2y3t4r5e6w7q8a9s0d1f'
+  },
+  {
+    title: 'Raise High the Roof Beam, Carpenters',
+    author: 'J.D. Salinger',
+    url: 'https://www.example.com/roof-beam',
+    likes: 789,
+    id: 'l9k8j7h6g5f4d3s2a1p0o'
+  },
+  {
+    title: 'Zooey',
+    author: 'J.D. Salinger',
+    url: 'https://www.example.com/zooey',
+    likes: 234,
+    id: 'w0e9r8t7y6u5i4o3p2a1s'
+  },
+  {
+    title: 'Nine Stories',
+    author: 'J.D. Salinger',
+    url: 'https://www.example.com/nine',
+    likes: 123,
+    id: 'c5v6b7n8m9a1s2d3f4g5h'
+  },
+  {
+    title: 'Franny',
+    author: 'J.D. Salinger',
+    url: 'https://www.example.com/franny-2',
+    likes: 567,
+    id: 'z0x9c8v7b6n5m4l3k2j1h'
+  },
+  {
+    title: 'The Catcher in the Rye',
+    author: 'J.D. Salinger',
+    url: 'https://www.example.com/catcher-rye',
+    likes: 567,
+    id: 'z1x2c3v4b5n6m7l8k9j0h'
+  },
+  {
+    title: 'Teddy',
+    author: 'J.D. Salinger',
+    url: 'https://www.example.com/teddy',
+    likes: 234,
+    id: 'b1v2n3m4q5w6e7r8t9y0u'
+  }
+]
+
 describe('total Likes', () => {
 
   test('when list has one blog, equals the likes of that', () => {
@@ -86,5 +243,19 @@ describe('favorite blog', () => {
 
   test('returns a blog when ther is a tie', () => {
     expect(listHelper.favoriteBlog(bothArePopular)).toEqual(listWithOneBlog[0])
+  })
+})
+
+describe('most blogs', () => {
+
+  test('when list is empty, returns empty object', () => {
+    expect(listHelper.mostBlogs([])).toEqual({})
+  })
+
+  test('returns an object with the right author and blog count', () => {
+    expect(listHelper.mostBlogs(listWithManyBlogs)).toEqual({
+      'author': 'J.D. Salinger',
+      'blogs': 8,
+    })
   })
 })
