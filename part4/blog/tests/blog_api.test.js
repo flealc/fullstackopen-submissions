@@ -82,6 +82,9 @@ test('if the title field is missing, server responds with 400 Bad Request', asyn
     .post('/api/blogs')
     .send(newBlog)
     .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 })
 
 test('if the url field is missing, server responds with 400 Bad Request', async () => {
@@ -95,6 +98,26 @@ test('if the url field is missing, server responds with 400 Bad Request', async 
     .post('/api/blogs')
     .send(newBlog)
     .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+})
+
+test('deletion of a blog', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToDelete = blogsAtStart[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+
+  const titles = (await blogsAtEnd).map(b => b.title)
+
+  expect(titles).not.toContain(blogToDelete.title)
 })
 
 afterAll(async () => {
