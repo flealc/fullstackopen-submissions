@@ -34,10 +34,10 @@ test('blogs have a property "id"', async () => {
 
 test('successfully create a new blog', async () => {
   const newBlog = {
-    title: 'Like Me Please: The Inspiring History of A Likeless Blog',
-    author: 'Blog_In_Progress',
-    url: 'http://www.blogtosuccess.net',
-    id: '5a422aa71b54a676234d17e3'
+    title: 'The Catcher in the Rye',
+    author: 'J.D. Salinger',
+    url: 'https://www.example.com/catcher',
+    likes: 456
   }
 
   await api
@@ -51,7 +51,24 @@ test('successfully create a new blog', async () => {
 
   expect(blogsAfterPost).toHaveLength(helper.initialBlogs.length + 1)
 
-  expect(titles).toContain('Like Me Please: The Inspiring History of A Likeless Blog')
+  expect(titles).toContain('The Catcher in the Rye')
+})
+
+test('if the likes property is missing, it will default to zero', async () => {
+
+  const newBlog = {
+    title: 'Like Me Please: The Inspiring History of A Likeless Blog',
+    author: 'Blog_In_Progress',
+    url: 'http://www.blogtosuccess.net',
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  expect(response.body.likes).toBe(0)
 })
 
 afterAll(async () => {
