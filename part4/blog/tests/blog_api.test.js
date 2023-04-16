@@ -71,6 +71,32 @@ test('if the likes property is missing, it will default to zero', async () => {
   expect(response.body.likes).toBe(0)
 })
 
+test('if the title field is missing, server responds with 400 Bad Request', async () => {
+  const newBlog = {
+    author: 'Blog_In_Progress',
+    url: 'http://www.blogtosuccess.net',
+    likes: 456
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
+test('if the url field is missing, server responds with 400 Bad Request', async () => {
+  const newBlog = {
+    title: 'Like Me Please: The Inspiring History of A Likeless Blog',
+    author: 'Blog_In_Progress',
+    likes: 456
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
