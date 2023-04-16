@@ -43,7 +43,7 @@ const listWithFourBlogs = [
     id: '6436204b5da1183555b26ebc'
   },
   {
-    title: 'Like Me Please: The Inspiring History of A Likless Blog',
+    title: 'Like Me Please: The Inspiring History of A Likeless Blog',
     author: 'Blog_In_Progress',
     url: 'http://www.blogtosuccess.net',
     id: '5a422aa71b54a676234d17e3'

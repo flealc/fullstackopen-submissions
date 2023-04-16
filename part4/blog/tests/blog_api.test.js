@@ -32,6 +32,28 @@ test('blogs have a property "id"', async () => {
   expect(blogs[0].id).toBeDefined()
 })
 
+test('successfully create a new blog', async () => {
+  const newBlog = {
+    title: 'Like Me Please: The Inspiring History of A Likeless Blog',
+    author: 'Blog_In_Progress',
+    url: 'http://www.blogtosuccess.net',
+    id: '5a422aa71b54a676234d17e3'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAfterPost = await helper.blogsInDb()
+  const titles = blogsAfterPost.map(b => b.title)
+
+  expect(blogsAfterPost).toHaveLength(helper.initialBlogs.length + 1)
+
+  expect(titles).toContain('Like Me Please: The Inspiring History of A Likeless Blog')
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
