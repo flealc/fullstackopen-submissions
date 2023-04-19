@@ -3,17 +3,35 @@ const supertest = require('supertest')
 const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
+const User = require('../models/user')
 
 const Blog = require('../models/blog')
 
+let token = null
 beforeEach(async () => {
   await Blog.deleteMany({})
-
+  await User.deleteMany({})
   const blogObjects =
   helper.initialBlogs.map(b => new Blog(b))
 
   const promiseArray = blogObjects.map(b => b.save())
   await Promise.all(promiseArray)
+
+  const userCredentials = {
+    username: 'itsme',
+    password: 'passw0rd'
+  }
+
+  await api
+    .post('/api/users')
+    .send(userCredentials)
+
+  const response = await api
+    .post('/api/login')
+    .send(userCredentials)
+
+  token = response.body.token
+
 })
 
 
@@ -32,76 +50,104 @@ test('blogs have a property "id"', async () => {
   expect(blogs[0].id).toBeDefined()
 })
 
-test('successfully create a new blog', async () => {
-  const newBlog = {
-    title: 'The Catcher in the Rye',
-    author: 'J.D. Salinger',
-    url: 'https://www.example.com/catcher',
-    likes: 456
-  }
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+describe('blog creation tests', () => {
 
-  const blogsAfterPost = await helper.blogsInDb()
-  const titles = blogsAfterPost.map(b => b.title)
+  test('successfully create a new blog', async () => {
+    const newBlog = {
+      title: 'The Catcher in the Rye',
+      author: 'J.D. Salinger',
+      url: 'https://www.example.com/catcher',
+      likes: 456
+    }
 
-  expect(blogsAfterPost).toHaveLength(helper.initialBlogs.length + 1)
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
 
-  expect(titles).toContain('The Catcher in the Rye')
+    const blogsAfterPost = await helper.blogsInDb()
+    const titles = blogsAfterPost.map(b => b.title)
+
+    expect(blogsAfterPost).toHaveLength(helper.initialBlogs.length + 1)
+
+    expect(titles).toContain('The Catcher in the Rye')
+  })
+
+  test('if the likes property is missing, it will default to zero', async () => {
+
+    const newBlog = {
+      title: 'Like Me Please: The Inspiring History of A Likeless Blog',
+      author: 'Blog_In_Progress',
+      url: 'http://www.blogtosuccess.net',
+    }
+
+    const response = await api
+      .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.likes).toBe(0)
+  })
+
+  test('if the title field is missing, server responds with 400 Bad Request', async () => {
+    const newBlog = {
+      author: 'Blog_In_Progress',
+      url: 'http://www.blogtosuccess.net',
+      likes: 456
+    }
+
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
+      .send(newBlog)
+      .expect(400)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+  })
+
+  test('if the url field is missing, server responds with 400 Bad Request', async () => {
+    const newBlog = {
+      title: 'Like Me Please: The Inspiring History of A Likeless Blog',
+      author: 'Blog_In_Progress',
+      likes: 456
+    }
+
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
+      .send(newBlog)
+      .expect(400)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+  })
+
+  test('if a token is not provided, server responds with 401 Unauthorized', async () => {
+
+    const newBlog = {
+      title: 'Like Me Please: The Inspiring History of A Likeless Blog',
+      author: 'Blog_In_Progress',
+      url: 'http://www.blogtosuccess.net',
+      likes: 456
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+  })
+
 })
 
-test('if the likes property is missing, it will default to zero', async () => {
-
-  const newBlog = {
-    title: 'Like Me Please: The Inspiring History of A Likeless Blog',
-    author: 'Blog_In_Progress',
-    url: 'http://www.blogtosuccess.net',
-  }
-
-  const response = await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
-
-  expect(response.body.likes).toBe(0)
-})
-
-test('if the title field is missing, server responds with 400 Bad Request', async () => {
-  const newBlog = {
-    author: 'Blog_In_Progress',
-    url: 'http://www.blogtosuccess.net',
-    likes: 456
-  }
-
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(400)
-
-  const blogsAtEnd = await helper.blogsInDb()
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
-})
-
-test('if the url field is missing, server responds with 400 Bad Request', async () => {
-  const newBlog = {
-    title: 'Like Me Please: The Inspiring History of A Likeless Blog',
-    author: 'Blog_In_Progress',
-    likes: 456
-  }
-
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(400)
-
-  const blogsAtEnd = await helper.blogsInDb()
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
-})
 
 test('deletion of a blog', async () => {
   const blogsAtStart = await helper.blogsInDb()
