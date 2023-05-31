@@ -13,9 +13,9 @@ const getAll = async () => {
     headers: {Authorization: token}
   }
 
-  const request = await axios.get(baseUrl, config)
+  const response = await axios.get(baseUrl, config)
 
-  return  request.data
+  return  response.data
 }
 
 
