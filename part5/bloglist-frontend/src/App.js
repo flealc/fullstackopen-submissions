@@ -4,12 +4,14 @@ import Blogs from './components/Blogs'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/BlogForm'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [notification, setNotification] = useState([null, null])
  
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -17,8 +19,9 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
+      getBlogs()
     }
-    getBlogs()
+    
   }, [])
 
 
@@ -30,9 +33,16 @@ const App = () => {
   const createBlog = async (blogToCreate) => {
     try {
       const blog = await blogService.create(blogToCreate)
-      setBlogs(blogs.concat(blog.data))
+      setNotification(['success', `New blog "${blog.title}" by ${blog.author} added`])
+      setBlogs(blogs.concat(blog))
+      setTimeout(() => {
+        setNotification([null, null])
+      }, 5000)
     } catch (exception) {
-      console.log(exception)
+      setNotification(['error', exception.response.data.error])
+      setTimeout(() => {
+        setNotification([null, null])
+      }, 5000)
     }
     
   }
@@ -54,8 +64,15 @@ const App = () => {
       setUsername('')
       setPassword('')
       getBlogs()
+      setNotification(['success', 'Welcome!'])
+      setTimeout(() => {
+        setNotification([null, null])
+      }, 5000)
     } catch (exception) {
-      console.log(exception)
+      setNotification(['error', 'Wrong username or password'])
+      setTimeout(() => {
+        setNotification([null, null])
+      }, 5000)
     }
 
   }
@@ -69,6 +86,7 @@ const App = () => {
   
   return (
     <div>
+      <Notification content={notification} />
       {!user ? 
         <Login 
           handleLogin={handleLogin}

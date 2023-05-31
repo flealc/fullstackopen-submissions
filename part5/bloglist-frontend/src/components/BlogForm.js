@@ -17,8 +17,8 @@ const BlogForm = ( {createBlog} ) => {
     setNewUrl(event.target.value)
   }
 
-const newBlog = () => {
- 
+const newBlog = async (event) => {
+ event.preventDefault()
   createBlog({
     title: newTitle,
     author: newAuthor,
