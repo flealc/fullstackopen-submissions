@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
-import Blog from './components/Blog'
+import Login from './components/Login'
+import Blogs from './components/Blogs'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -16,6 +18,7 @@ const App = () => {
       setUser(user)
       blogService.setToken(user.token)
     }
+    getBlogs()
   }, [])
 
 
@@ -23,6 +26,19 @@ const App = () => {
     const blogs = await blogService.getAll()
     setBlogs(blogs)
   }
+  
+  const createBlog = async (blogToCreate) => {
+    try {
+      const blog = await blogService.create(blogToCreate)
+      setBlogs(blogs.concat(blog.data))
+    } catch (exception) {
+      console.log(exception)
+    }
+    
+  }
+
+  
+  
   const handleLogin = async (event) => {
     event.preventDefault()
 
@@ -50,44 +66,30 @@ const App = () => {
     setUser(null)
   }
 
-  if (user === null) {
-    return (
-      <div>
-        <h2>log in to application</h2>
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange = {({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-            <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange = {({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button type="submit">login</button>
-        </form>
-      </div>
-    )
-  }
+  
   return (
+    <div>
+      {!user ? 
+        <Login 
+          handleLogin={handleLogin}
+          username={username}
+          password={password}
+          setUsername={setUsername}
+          setPassword={setPassword} 
+          /> :
+          <div>
+            <Blogs
+              handleLogout={handleLogout}
+              name={user.name}
+              blogs={blogs}
+            />
+            <BlogForm
+              createBlog={createBlog}
+            />
+          </div>
+          }
+    </div>  
       
-      <div>
-        <h2>blogs</h2>
-        <p>{user.name} logged in <button onClick={ handleLogout }>logout</button></p>
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
-        )}
-      </div>
-    
   )
 }
 
