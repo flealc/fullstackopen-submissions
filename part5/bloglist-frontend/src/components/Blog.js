@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({blog, updateBlog}) => {
+const Blog = ({blog, updateBlog, deleteBlog}) => {
 
   
   const [visible, setVisible] = useState(false)
@@ -29,8 +29,14 @@ const Blog = ({blog, updateBlog}) => {
     }
     await updateBlog(likedBlog, blog.id)
   }
+
+  const handleDelete = async () => {
+    await deleteBlog(blog)
+  }
   
   const showWhenVisible = { display: visible ? '' : 'none' }
+  const blogUser = JSON.parse(localStorage.getItem('loggedUser')).username
+  const userIsAuthor = {display: blog.user.username === blogUser ? '' : 'none' }
   
   return (
     <div style={blogStyle}>
@@ -41,6 +47,7 @@ const Blog = ({blog, updateBlog}) => {
         <div>{blog.url}</div>
         <div>likes {blog.likes} <button onClick={handleLike}>like</button></div>
         <div>{blog.user.name}</div>
+        <div style={userIsAuthor}><button onClick={handleDelete}>remove</button></div>
       </div>
     </div>
   )

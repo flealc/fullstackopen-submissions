@@ -64,6 +64,25 @@ const App = () => {
     
   }
 
+  const deleteBlog = async (blogToDelete) => {
+    if (window.confirm(`Remove blog ${blogToDelete.title} by ${blogToDelete.author}?`)) {
+      try {
+        await blogService.remove(blogToDelete, blogToDelete.id)
+        setNotification(['success', `Blog removed!`])
+        getBlogs()
+        setTimeout(() => {
+          setNotification([null, null])
+        }, 5000)
+        
+      } catch (exception) {
+      setNotification(['error', exception.response.data.error])
+      setTimeout(() => {
+        setNotification([null, null])
+      }, 5000)
+      }
+    }  
+  }
+
   
   
   const handleLogin = async (event) => {
@@ -127,7 +146,8 @@ const App = () => {
               <Blog
               key={blog.id} 
               blog={blog} 
-              updateBlog={updateBlog} 
+              updateBlog={updateBlog}
+              deleteBlog={deleteBlog} 
               />
               )}
           </div>
