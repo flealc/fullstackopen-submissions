@@ -66,6 +66,15 @@ const App = () => {
             setMessage(null)
           }, 5000)
         })
+        .catch(error => {
+          setMessage({
+            text: `${error.response.data.error}`,
+            class: 'error'
+          })
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        })
       }
   }
 
@@ -100,16 +109,25 @@ const App = () => {
           }, 5000)
         })
         .catch(error => {
-          setMessage({
-            text: `Information of ${person.name} has already been removed from server`,
-            class: 'error'
-          }
-          )
-          setTimeout(() => {
-            setMessage(null)
-          }, 5000) 
-          
-          setPersons(persons.filter(n => n.id !== person.id))
+          if (error.response.status === 400) {
+            setMessage({
+              text: `${error.response.data.error}`,
+              class: 'error'
+            })
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000) 
+          } else { 
+            setMessage({
+              text: `Information of ${person.name} has already been removed from server`,
+              class: 'error'
+            })
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000) 
+            
+            setPersons(persons.filter(n => n.id !== person.id))
+          } 
         })
   }
       
