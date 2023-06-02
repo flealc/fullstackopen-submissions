@@ -4,6 +4,7 @@ import Blogs from './components/Blogs'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 
 const App = () => {
@@ -101,9 +102,11 @@ const App = () => {
               name={user.name}
               blogs={blogs}
             />
-            <BlogForm
-              createBlog={createBlog}
-            />
+            <Togglable buttonLabel='new blog'>
+              <BlogForm
+                createBlog={createBlog}
+              />
+            </Togglable>
           </div>
           }
     </div>  
