@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Login from './components/Login'
-import Blogs from './components/Blogs'
+import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/BlogForm'
@@ -22,7 +22,6 @@ const App = () => {
       blogService.setToken(user.token)
       getBlogs()
     }
-    
   }, [])
 
 
@@ -44,6 +43,23 @@ const App = () => {
       setTimeout(() => {
         setNotification([null, null])
       }, 5000)
+    }
+    
+  }
+
+  const updateBlog = async (blogToUpdate, blogId) => {
+    try {
+      const blog = await blogService.update(blogToUpdate, blogId)
+      setNotification(['success', `You liked "${blog.title}" by ${blog.author}`])
+      setTimeout(() => {
+        setNotification([null, null])
+      }, 5000)
+      setBlogs(blogs.filter(b => b.id !== blog.id).concat(blog))
+    } catch (exception) {
+    setNotification(['error', exception.response.data.error])
+    setTimeout(() => {
+      setNotification([null, null])
+    }, 5000)
     }
     
   }
@@ -84,7 +100,10 @@ const App = () => {
     setUser(null)
   }
 
-  
+  const likesSort = (blog1, blog2) => (
+    blog2.likes-blog1.likes
+  )
+
   return (
     <div>
       <Notification content={notification} />
@@ -97,16 +116,20 @@ const App = () => {
           setPassword={setPassword} 
           /> :
           <div>
-            <Blogs
-              handleLogout={handleLogout}
-              name={user.name}
-              blogs={blogs}
-            />
+            <h2>blogs</h2>
+            <p>{user.name} logged in <button onClick={ handleLogout }>logout</button></p>             
             <Togglable buttonLabel='new blog'>
               <BlogForm
                 createBlog={createBlog}
               />
             </Togglable>
+            {blogs.sort(likesSort).map(blog => 
+              <Blog
+              key={blog.id} 
+              blog={blog} 
+              updateBlog={updateBlog} 
+              />
+              )}
           </div>
           }
     </div>  
