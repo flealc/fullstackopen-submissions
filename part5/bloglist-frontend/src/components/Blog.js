@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
-const Blog = ({blog, updateBlog, deleteBlog}) => {
+const Blog = ({ blog, updateBlog, deleteBlog }) => {
 
-  
+
   const [visible, setVisible] = useState(false)
-  
+
   const toggleVisibility = () => {
     setVisible(!visible)
   }
@@ -33,11 +33,11 @@ const Blog = ({blog, updateBlog, deleteBlog}) => {
   const handleDelete = async () => {
     await deleteBlog(blog)
   }
-  
+
   const showWhenVisible = { display: visible ? '' : 'none' }
   const blogUser = JSON.parse(localStorage.getItem('loggedUser')).username
-  const userIsAuthor = {display: blog.user.username === blogUser ? '' : 'none' }
-  
+  const userIsAuthor = { display: blog.user.username === blogUser ? '' : 'none' }
+
   return (
     <div style={blogStyle}>
       <div>
@@ -51,6 +51,6 @@ const Blog = ({blog, updateBlog, deleteBlog}) => {
       </div>
     </div>
   )
-  }
+}
 
 export default Blog

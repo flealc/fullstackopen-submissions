@@ -13,7 +13,7 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState([null, null])
- 
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
@@ -29,7 +29,7 @@ const App = () => {
     const blogs = await blogService.getAll()
     setBlogs(blogs)
   }
-  
+
   const createBlog = async (blogToCreate) => {
     try {
       const blog = await blogService.create(blogToCreate)
@@ -44,7 +44,7 @@ const App = () => {
         setNotification([null, null])
       }, 5000)
     }
-    
+
   }
 
   const updateBlog = async (blogToUpdate, blogId) => {
@@ -56,35 +56,35 @@ const App = () => {
       }, 5000)
       setBlogs(blogs.filter(b => b.id !== blog.id).concat(blog))
     } catch (exception) {
-    setNotification(['error', exception.response.data.error])
-    setTimeout(() => {
-      setNotification([null, null])
-    }, 5000)
+      setNotification(['error', exception.response.data.error])
+      setTimeout(() => {
+        setNotification([null, null])
+      }, 5000)
     }
-    
+
   }
 
   const deleteBlog = async (blogToDelete) => {
     if (window.confirm(`Remove blog ${blogToDelete.title} by ${blogToDelete.author}?`)) {
       try {
         await blogService.remove(blogToDelete, blogToDelete.id)
-        setNotification(['success', `Blog removed!`])
+        setNotification(['success', 'Blog removed!'])
         getBlogs()
         setTimeout(() => {
           setNotification([null, null])
         }, 5000)
-        
+
       } catch (exception) {
-      setNotification(['error', exception.response.data.error])
-      setTimeout(() => {
-        setNotification([null, null])
-      }, 5000)
+        setNotification(['error', exception.response.data.error])
+        setTimeout(() => {
+          setNotification([null, null])
+        }, 5000)
       }
-    }  
+    }
   }
 
-  
-  
+
+
   const handleLogin = async (event) => {
     event.preventDefault()
 
@@ -126,34 +126,34 @@ const App = () => {
   return (
     <div>
       <Notification content={notification} />
-      {!user ? 
-        <Login 
+      {!user ?
+        <Login
           handleLogin={handleLogin}
           username={username}
           password={password}
           setUsername={setUsername}
-          setPassword={setPassword} 
-          /> :
-          <div>
-            <h2>blogs</h2>
-            <p>{user.name} logged in <button onClick={ handleLogout }>logout</button></p>             
-            <Togglable buttonLabel='new blog'>
-              <BlogForm
-                createBlog={createBlog}
-              />
-            </Togglable>
-            {blogs.sort(likesSort).map(blog => 
-              <Blog
-              key={blog.id} 
-              blog={blog} 
+          setPassword={setPassword}
+        /> :
+        <div>
+          <h2>blogs</h2>
+          <p>{user.name} logged in <button onClick={ handleLogout }>logout</button></p>
+          <Togglable buttonLabel='new blog'>
+            <BlogForm
+              createBlog={createBlog}
+            />
+          </Togglable>
+          {blogs.sort(likesSort).map(blog =>
+            <Blog
+              key={blog.id}
+              blog={blog}
               updateBlog={updateBlog}
-              deleteBlog={deleteBlog} 
-              />
-              )}
-          </div>
-          }
-    </div>  
-      
+              deleteBlog={deleteBlog}
+            />
+          )}
+        </div>
+      }
+    </div>
+
   )
 }
 

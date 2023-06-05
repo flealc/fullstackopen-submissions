@@ -8,7 +8,7 @@ let config
 const setToken = newToken => {
   token = `bearer ${newToken}`
   config = {
-    headers: {Authorization: token}
+    headers: { Authorization: token }
   }
 }
 
@@ -21,7 +21,7 @@ const getAll = async () => {
 
 const create = async (blog) => {
   const response = await axios.post(baseUrl, blog, config)
-  
+
   return response.data
 }
 
@@ -38,5 +38,5 @@ const remove = async (blog, id) => {
 }
 
 
-// eslint-disable-next-line import/no-anonymous-default-export
+
 export default { getAll, setToken, create, update, remove }
