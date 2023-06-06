@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
-
+const mockHandler = jest.fn()
 describe('<Blog >/', () => {
 
   let container
@@ -19,7 +19,8 @@ describe('<Blog >/', () => {
       likes: 1000,
       user: 'test_user'
     }
-    container = render(<Blog blog={blog} />).container
+
+    container = render(<Blog blog={blog} updateBlog={mockHandler} />).container
   })
 
   test('renders title and author but not url or likes by default', () => {
@@ -41,4 +42,20 @@ describe('<Blog >/', () => {
     screen.getByText('https://www.thisisatesturl.com')
   })
 
+  test('event handler gets called twice if like button is cliked twice', async () => {
+
+    const user = userEvent.setup()
+    const button = screen.getByText('view')
+
+    await user.click(button)
+
+    const like = screen.getByText('like')
+    screen.debug(like)
+    await user.click(like)
+    await user.click(like)
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
+  })
+
 })
+
