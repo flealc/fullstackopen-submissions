@@ -44,7 +44,7 @@ describe('Blog app', function() {
       cy.login({ username: 'mluukkai', password: 'salainen' })
     })
 
-    it.only('A blog can be created', function() {
+    it('A blog can be created', function() {
       cy.contains('new blog').click()
 
       cy.contains('Title').find('input').type('This Is A Fake Blog!')
@@ -60,6 +60,20 @@ describe('Blog app', function() {
       cy.get('.success')
         .should('contain','New blog "This Is A Fake Blog!" by Blogger Fake added')
         .and('have.css', 'color', 'rgb(0, 128, 0)')
+    })
+
+    it('User can like a blog', function() {
+      cy.contains('new blog').click()
+
+      cy.contains('Title').find('input').type('This Is A Fake Blog!')
+      cy.contains('Author').find('input').type('Blogger Fake')
+      cy.contains('Url').find('input').type('https://www.this-is-not-a-url.not')
+
+      cy.get('#create').click()
+      cy.get('#detailsButton').click()
+      cy.contains( 'likes 0')
+      cy.contains('like').click()
+      cy.contains( 'likes 1')
     })
   })
 
