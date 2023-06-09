@@ -92,7 +92,7 @@ describe('Blog app', function() {
       cy.should('not.contain', 'This Is A Fake Blog!')
     })
 
-    it.only('Only creator can see remove button for a blog', function() {
+    it('Only creator can see remove button for a blog', function() {
       cy.createBlog({
         title: 'This Is A Fake Blog!',
         author: 'Blogger Fake',
@@ -116,6 +116,42 @@ describe('Blog app', function() {
         .get('#removeButton')
         .parent()
         .should('have.css', 'display', 'none')
+    })
+
+    it.only('Blogs are ordered according to likes', function() {
+      cy.createBlog({
+        title: 'This Is A Fake Blog!',
+        author: 'Blogger Fake',
+        url: 'https://www.this-is-not-a-url.not'
+      })
+
+      cy.createBlog({
+        title: 'This Is A Faker Blog!',
+        author: 'Blogger Fake',
+        url: 'https://www.this-is-not-a-url.not'
+      })
+
+      cy.createBlog({
+        title: 'This Is The Fakest Blog!',
+        author: 'Blogger Fake',
+        url: 'https://www.this-is-not-a-url.not'
+      })
+      cy.reload()
+
+      cy.contains('view').eq(0).click()
+      cy.contains('view').eq(0).click()
+      cy.contains('view').eq(0).click()
+
+      cy.get('.likeButton').eq(2).click()
+      cy.wait(500)
+      cy.get('.likeButton').eq(2).click()
+      cy.wait(500)
+      cy.get('.likeButton').eq(0).click()
+      cy.wait(500)
+
+      cy.get('.blogDetails').eq(0).parent().should('contain', 'This Is The Fakest Blog!')
+      cy.get('.blogDetails').eq(1).parent().should('contain', 'This Is A Faker Blog!')
+      cy.get('.blogDetails').eq(2).parent().should('contain', 'This Is A Fake Blog!')
 
     })
 
