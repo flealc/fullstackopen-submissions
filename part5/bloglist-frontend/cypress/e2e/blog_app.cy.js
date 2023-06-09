@@ -63,18 +63,36 @@ describe('Blog app', function() {
     })
 
     it('User can like a blog', function() {
-      cy.contains('new blog').click()
-
-      cy.contains('Title').find('input').type('This Is A Fake Blog!')
-      cy.contains('Author').find('input').type('Blogger Fake')
-      cy.contains('Url').find('input').type('https://www.this-is-not-a-url.not')
-
-      cy.get('#create').click()
+      cy.createBlog({
+        title: 'This Is A Fake Blog!',
+        author: 'Blogger Fake',
+        url: 'https://www.this-is-not-a-url.not'
+      })
+      cy.reload()
       cy.get('#detailsButton').click()
       cy.contains( 'likes 0')
       cy.contains('like').click()
       cy.contains( 'likes 1')
     })
+
+    it.only('User can delete a blog', function() {
+      cy.createBlog({
+        title: 'This Is A Fake Blog!',
+        author: 'Blogger Fake',
+        url: 'https://www.this-is-not-a-url.not'
+      })
+      cy.reload()
+      cy.get('#detailsButton').click()
+
+      cy.get('#removeButton').click()
+      cy.get('.success')
+        .should('contain','Blog removed!')
+        .and('have.css', 'color', 'rgb(0, 128, 0)')
+
+      cy.should('not.contain', 'This Is A Fake Blog!')
+    })
+
   })
+
 
 })
