@@ -75,7 +75,7 @@ describe('Blog app', function() {
       cy.contains( 'likes 1')
     })
 
-    it.only('User can delete a blog', function() {
+    it('User can delete a blog', function() {
       cy.createBlog({
         title: 'This Is A Fake Blog!',
         author: 'Blogger Fake',
@@ -90,6 +90,33 @@ describe('Blog app', function() {
         .and('have.css', 'color', 'rgb(0, 128, 0)')
 
       cy.should('not.contain', 'This Is A Fake Blog!')
+    })
+
+    it.only('Only creator can see remove button for a blog', function() {
+      cy.createBlog({
+        title: 'This Is A Fake Blog!',
+        author: 'Blogger Fake',
+        url: 'https://www.this-is-not-a-url.not'
+      })
+      cy.contains('logout').click()
+
+      const user = {
+        name: 'User Fake',
+        username: 'fake',
+        password: 'fake_salainen'
+      }
+      cy.request('POST', 'http://localhost:3003/api/users', user)
+
+      cy.login({ username: 'fake', password: 'fake_salainen' })
+      cy.reload()
+
+      cy.contains('This Is A Fake Blog!')
+        .get('#detailsButton')
+        .click()
+        .get('#removeButton')
+        .parent()
+        .should('have.css', 'display', 'none')
+
     })
 
   })
