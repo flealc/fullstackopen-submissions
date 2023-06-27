@@ -17,7 +17,7 @@ const App = () => {
       .then(anecdotes => dispatch(
         setAnecdotes(anecdotes)
       ))
-  })
+  }, [dispatch])
   return (
     <div>
       <h2>Anecdotes</h2>
