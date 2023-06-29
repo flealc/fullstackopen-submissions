@@ -1,31 +1,34 @@
 import { useState } from 'react'
 import {
-  BrowserRouter as Router,
+  useMatch,
   Routes,
   Route,
   Link
 } from 'react-router-dom'
 
 const Menu = ({ anecdotes,addNew }) => {
+  const match = useMatch('/anecdotes/:id')
+  const anecdote = match 
+    ? anecdotes.find(a => a.id === Number(match.params.id))
+    : null
+
   const padding = {
     paddingRight: 5
   }
   return (
     <div>
-      <Router>
-        <div>
-          <Link to="/" style={padding}>anecdotes</Link>
-          <Link to= "/create" style={padding}>create new</Link>
-          <Link to= "/about" style={padding}>about</Link>
-        </div>
+      <div>
+        <Link to="/" style={padding}>anecdotes</Link>
+        <Link to= "/create" style={padding}>create new</Link>
+        <Link to= "/about" style={padding}>about</Link>
+      </div>
 
-        <Routes>
-          <Route path="/" element={<AnecdoteList anecdotes={anecdotes}/>} />
-          <Route path="/about" element={<About />} />
-          <Route path="/create" element={<CreateNew addNew={addNew} />} />
-        </Routes>
-      </Router>
-        
+      <Routes>
+        <Route path="/" element={<AnecdoteList anecdotes={anecdotes}/>} />
+        <Route path="/about" element={<About />} />
+        <Route path="/create" element={<CreateNew addNew={addNew} />} />
+        <Route path="/anecdotes/:id" element={<Anecdote anecdote={anecdote}/>} /> 
+      </Routes>
     </div>
   )
 }
@@ -34,7 +37,11 @@ const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote => 
+        <li key={anecdote.id} >
+          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+        </li>
+      )}
     </ul>
   </div>
 )
@@ -100,6 +107,18 @@ const CreateNew = (props) => {
 
 }
 
+const Anecdote = ({ anecdote }) => {
+  const margin = {
+    marginBottom: 10
+  }
+  return (
+    <div>
+      <h2 style={margin}>{anecdote.content}</h2>
+      <div style={margin}>has {anecdote.votes} votes</div>
+      <div style={margin}>for more info see <a href={anecdote.info}>{anecdote.info}</a></div>
+    </div>
+  )
+}
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
     {
@@ -117,6 +136,7 @@ const App = () => {
       id: 2
     }
   ])
+
 
   const [notification, setNotification] = useState('')
 
