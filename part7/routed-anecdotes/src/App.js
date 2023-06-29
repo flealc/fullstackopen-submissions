@@ -3,10 +3,11 @@ import {
   useMatch,
   Routes,
   Route,
-  Link
+  Link,
+  useNavigate
 } from 'react-router-dom'
 
-const Menu = ({ anecdotes,addNew }) => {
+const Menu = ({ anecdotes,addNew, notification }) => {
   const match = useMatch('/anecdotes/:id')
   const anecdote = match 
     ? anecdotes.find(a => a.id === Number(match.params.id))
@@ -21,6 +22,7 @@ const Menu = ({ anecdotes,addNew }) => {
         <Link to="/" style={padding}>anecdotes</Link>
         <Link to= "/create" style={padding}>create new</Link>
         <Link to= "/about" style={padding}>about</Link>
+        <div>{notification}</div>
       </div>
 
       <Routes>
@@ -72,6 +74,7 @@ const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
+  const navigate = useNavigate()
 
 
   const handleSubmit = (e) => {
@@ -82,6 +85,8 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    navigate('/')
+
   }
 
   return (
@@ -143,6 +148,8 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(`a new anecdote '${anecdote.content} created!`)
+    setTimeout(() => {setNotification(null)}, 5000)
   }
 
   const anecdoteById = (id) =>
@@ -162,7 +169,11 @@ const App = () => {
   return (
     <div>
       <h1>Software anecdotes</h1>
-      <Menu anecdotes={anecdotes} addNew={addNew}/>
+      <Menu 
+        anecdotes={anecdotes} 
+        addNew={addNew} 
+        notification={notification}
+      />
       <Footer />
     </div>
   )
