@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import { notifyWith } from "./reducers/notificationReducer"
+import { initializeBlogs, likeBlog, deleteBlog } from "./reducers/blogReducer"
 
 import Blog from "./components/Blog"
-import blogService from "./services/blogs"
 import loginService from "./services/login"
 import storageService from "./services/storage"
 
@@ -12,11 +12,10 @@ import LoginForm from "./components/Login"
 import NewBlog from "./components/NewBlog"
 import Notification from "./components/Notification"
 import Togglable from "./components/Togglable"
-import { initializeBlogs } from "./reducers/blogReducer"
+
 
 
 const App = () => {
-  /* const [blogs, setBlogs] = useState([]) */
   const [user, setUser] = useState("")
   
   const dispatch = useDispatch()
@@ -55,10 +54,8 @@ const App = () => {
 
 
   const like = async (blog) => {
-    const blogToUpdate = { ...blog, likes: blog.likes + 1, user: blog.user.id }
-    const updatedBlog = await blogService.update(blogToUpdate)
+    dispatch(likeBlog(blog))
     dispatch(notifyWith(`A like for the blog '${blog.title}' by '${blog.author}'`))
-    setBlogs(blogs.map((b) => (b.id === blog.id ? updatedBlog : b)))
   }
 
   const remove = async (blog) => {
@@ -66,9 +63,8 @@ const App = () => {
       `Sure you want to remove '${blog.title}' by ${blog.author}`,
     )
     if (ok) {
-      await blogService.remove(blog.id)
+      dispatch(deleteBlog(blog.id))
       dispatch(notifyWith(`The blog' ${blog.title}' by '${blog.author} removed`))
-      setBlogs(blogs.filter((b) => b.id !== blog.id))
     }
   }
 
