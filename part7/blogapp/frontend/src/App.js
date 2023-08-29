@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux"
 
 import { notifyWith } from "./reducers/notificationReducer"
 import { initializeBlogs, likeBlog, deleteBlog } from "./reducers/blogReducer"
+import { loginUser, clearUser, setUser } from "./reducers/userReducer"
 
 import Blog from "./components/Blog"
-import loginService from "./services/login"
 import storageService from "./services/storage"
 
 import LoginForm from "./components/Login"
@@ -16,7 +16,7 @@ import Togglable from "./components/Togglable"
 
 
 const App = () => {
-  const [user, setUser] = useState("")
+  /* const [user, setUser] = useState("") */
   
   const dispatch = useDispatch()
 
@@ -24,7 +24,7 @@ const App = () => {
 
   useEffect(() => {
     const user = storageService.loadUser()
-    setUser(user)
+    dispatch(setUser(user))
   }, [])
 
   const blogs = useSelector(state => state.blog).map(blog => blog)
@@ -37,9 +37,7 @@ const App = () => {
 
   const login = async (username, password) => {
     try {
-      const user = await loginService.login({ username, password })
-      setUser(user)
-      storageService.saveUser(user)
+      await dispatch(loginUser(username, password))
       dispatch(notifyWith("welcome!"))
     } catch (e) {
       dispatch(notifyWith("wrong username or password", "error"))
@@ -47,11 +45,12 @@ const App = () => {
   }
 
   const logout = async () => {
-    setUser(null)
+    dispatch(clearUser())
     storageService.removeUser()
     dispatch(notifyWith("logged out"))
   }
 
+  const user = useSelector(state => state.user)
 
   const like = async (blog) => {
     dispatch(likeBlog(blog))
