@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react"
 import Blog from "./components/Blog"
-import blogService from "./services/blogs"
 import loginService from "./services/login"
 import storageService from "./services/storage"
 
@@ -11,7 +10,7 @@ import Togglable from "./components/Togglable"
 
 import { useNotificationDispatch } from "./NotificationContext"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { getBlogs, createNewBlog } from "./requests"
+import { getBlogs, createNewBlog, updateBlog, removeBlog } from "./requests"
 
 const App = () => {
   const [user, setUser] = useState("")
@@ -23,7 +22,8 @@ const App = () => {
 
   const blogsResult = useQuery({
     queryKey: ['blogs'],
-    queryFn: getBlogs
+    queryFn: getBlogs,
+    refetchOnWindowFocus: false
   })
 
   const blogs = blogsResult.data
@@ -35,14 +35,31 @@ const App = () => {
     }
   })
 
+  const updateBlogMutation = useMutation(updateBlog, {
+    onSuccess: (updatedBlog) => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      queryClient.setQueryData(['blogs'], blogs.map(
+        blog => blog.id === updatedBlog.id 
+          ? updatedBlog
+          : blog
+      ))
+    }
+  })
+
+  const removeBlogMutation = useMutation(removeBlog, {
+    onSuccess: (id) => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      queryClient.setQueryData(['blogs'], blogs.filter(
+        blog => blog.id !== id 
+      ))
+      }
+  })
+
   useEffect(() => {
     const user = storageService.loadUser()
     setUser(user)
   }, [])
 
-  /* useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, []) */
 
   const notifyWith = (message, type = "info") => {
     dispatch({type: 'SET', payload: {
@@ -80,9 +97,8 @@ const App = () => {
 
   const like = async (blog) => {
     const blogToUpdate = { ...blog, likes: blog.likes + 1, user: blog.user.id }
-    const updatedBlog = await blogService.update(blogToUpdate)
+    updateBlogMutation.mutate(blogToUpdate)
     notifyWith(`A like for the blog '${blog.title}' by '${blog.author}'`)
-    setBlogs(blogs.map((b) => (b.id === blog.id ? updatedBlog : b)))
   }
 
   const remove = async (blog) => {
@@ -90,9 +106,8 @@ const App = () => {
       `Sure you want to remove '${blog.title}' by ${blog.author}`,
     )
     if (ok) {
-      await blogService.remove(blog.id)
+      removeBlogMutation.mutate(blog.id)
       notifyWith(`The blog' ${blog.title}' by '${blog.author} removed`)
-      setBlogs(blogs.filter((b) => b.id !== blog.id))
     }
   }
 

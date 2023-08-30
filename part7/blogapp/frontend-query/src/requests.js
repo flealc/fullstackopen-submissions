@@ -14,3 +14,10 @@ export const getBlogs = () =>
 
 export const createNewBlog = newBlog =>
   axios.post(baseUrl, newBlog, { headers }).then(res => res.data)
+
+export const updateBlog = blogToUpdate =>
+  axios.put(`${baseUrl}/${blogToUpdate.id}`, blogToUpdate, { headers })
+       .then(res => res.data) 
+
+export const removeBlog = id =>
+  axios.delete(`${baseUrl}/${id}`, { headers }).then(res => id)
