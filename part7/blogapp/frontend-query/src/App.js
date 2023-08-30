@@ -9,12 +9,15 @@ import NewBlog from "./components/NewBlog"
 import Notification from "./components/Notification"
 import Togglable from "./components/Togglable"
 
+import { useNotificationDispatch } from "./NotificationContext"
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState("")
   const [info, setInfo] = useState({ message: null })
 
   const blogFormRef = useRef()
+  const dispatch = useNotificationDispatch()
 
   useEffect(() => {
     const user = storageService.loadUser()
@@ -26,13 +29,13 @@ const App = () => {
   }, [])
 
   const notifyWith = (message, type = "info") => {
-    setInfo({
+    dispatch({type: 'SET', payload: {
       message,
       type,
-    })
+    }})
 
     setTimeout(() => {
-      setInfo({ message: null })
+      dispatch({ type: 'CLEAR' })
     }, 3000)
   }
 
@@ -82,7 +85,7 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
-        <Notification info={info} />
+        <Notification />
         <LoginForm login={login} />
       </div>
     )
@@ -93,7 +96,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification info={info} />
+      <Notification />
       <div>
         {user.name} logged in
         <button onClick={logout}>logout</button>
