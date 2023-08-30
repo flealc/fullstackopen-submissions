@@ -3,7 +3,7 @@ import { useNotificationValue } from "../NotificationContext"
 const Notification = () => {
   const info = useNotificationValue()
   
-  if (!info) {
+  if (!info.message) {
     return
   }
 

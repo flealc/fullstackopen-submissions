@@ -10,23 +10,39 @@ import Notification from "./components/Notification"
 import Togglable from "./components/Togglable"
 
 import { useNotificationDispatch } from "./NotificationContext"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { getBlogs, createNewBlog } from "./requests"
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState("")
-  const [info, setInfo] = useState({ message: null })
 
   const blogFormRef = useRef()
   const dispatch = useNotificationDispatch()
+  const queryClient = useQueryClient()
+
+
+  const blogsResult = useQuery({
+    queryKey: ['blogs'],
+    queryFn: getBlogs
+  })
+
+  const blogs = blogsResult.data
+
+  const newBlogMutation = useMutation(createNewBlog, {
+    onSuccess: (newBlog) => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      queryClient.setQueryData(['blogs'], blogs.concat(newBlog))
+    }
+  })
 
   useEffect(() => {
     const user = storageService.loadUser()
     setUser(user)
   }, [])
 
-  useEffect(() => {
+  /* useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
+  }, []) */
 
   const notifyWith = (message, type = "info") => {
     dispatch({type: 'SET', payload: {
@@ -56,10 +72,9 @@ const App = () => {
     notifyWith("logged out")
   }
 
-  const createBlog = async (newBlog) => {
-    const createdBlog = await blogService.create(newBlog)
+  const createBlog = (newBlog) => {
+    newBlogMutation.mutate(newBlog)
     notifyWith(`A new blog '${newBlog.title}' by '${newBlog.author}' added`)
-    setBlogs(blogs.concat(createdBlog))
     blogFormRef.current.toggleVisibility()
   }
 
@@ -93,7 +108,7 @@ const App = () => {
 
   const byLikes = (b1, b2) => b2.likes - b1.likes
 
-  return (
+  if (blogs) return (
     <div>
       <h2>blogs</h2>
       <Notification />
@@ -101,7 +116,7 @@ const App = () => {
         {user.name} logged in
         <button onClick={logout}>logout</button>
       </div>
-      <Togglable buttonLabel="new note" ref={blogFormRef}>
+      <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <NewBlog createBlog={createBlog} />
       </Togglable>
       <div>
