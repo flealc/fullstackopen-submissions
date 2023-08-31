@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useRef } from "react"
 import Blog from "./components/Blog"
 import loginService from "./services/login"
 import storageService from "./services/storage"
@@ -9,16 +9,16 @@ import Notification from "./components/Notification"
 import Togglable from "./components/Togglable"
 
 import { useNotificationDispatch } from "./NotificationContext"
+import { useUserDispatch, useUserValue } from "./UserContext"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { getBlogs, createNewBlog, updateBlog, removeBlog } from "./requests"
 
 const App = () => {
-  const [user, setUser] = useState("")
-
   const blogFormRef = useRef()
   const dispatch = useNotificationDispatch()
+  const userDispatch = useUserDispatch()
   const queryClient = useQueryClient()
-
+  const user = useUserValue()  
 
   const blogsResult = useQuery({
     queryKey: ['blogs'],
@@ -32,6 +32,9 @@ const App = () => {
     onSuccess: (newBlog) => {
       const blogs = queryClient.getQueryData(['blogs'])
       queryClient.setQueryData(['blogs'], blogs.concat(newBlog))
+    }, 
+    onError: () => {
+      notifyWith('There was an error creating the blog', 'error')
     }
   })
 
@@ -55,14 +58,8 @@ const App = () => {
       }
   })
 
-  useEffect(() => {
-    const user = storageService.loadUser()
-    setUser(user)
-  }, [])
-
-
   const notifyWith = (message, type = "info") => {
-    dispatch({type: 'SET', payload: {
+    dispatch({ type: 'SET', payload: {
       message,
       type,
     }})
@@ -74,9 +71,9 @@ const App = () => {
 
   const login = async (username, password) => {
     try {
-      const user = await loginService.login({ username, password })
-      setUser(user)
-      storageService.saveUser(user)
+      const loggedUser = await loginService.login({ username, password })
+      storageService.saveUser(loggedUser)
+      userDispatch({ type: 'SET', payload: loggedUser })
       notifyWith("welcome!")
     } catch (e) {
       notifyWith("wrong username or password", "error")
@@ -84,7 +81,7 @@ const App = () => {
   }
 
   const logout = async () => {
-    setUser(null)
+    userDispatch({ type: 'CLEAR' })
     storageService.removeUser()
     notifyWith("logged out")
   }
@@ -124,6 +121,7 @@ const App = () => {
   const byLikes = (b1, b2) => b2.likes - b1.likes
 
   if (blogs) return (
+    
     <div>
       <h2>blogs</h2>
       <Notification />
