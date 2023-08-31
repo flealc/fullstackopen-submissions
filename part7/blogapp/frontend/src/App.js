@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import { notifyWith } from "./reducers/notificationReducer"
-import { initializeBlogs, likeBlog, deleteBlog } from "./reducers/blogReducer"
+import { initializeBlogs, likeBlog, deleteBlog, createBlog } from "./reducers/blogReducer"
 import { loginUser, clearUser, setUser } from "./reducers/userReducer"
+
 
 import Blog from "./components/Blog"
 import storageService from "./services/storage"
@@ -16,7 +17,6 @@ import Togglable from "./components/Togglable"
 
 
 const App = () => {
-  /* const [user, setUser] = useState("") */
   
   const dispatch = useDispatch()
 
@@ -57,6 +57,11 @@ const App = () => {
     dispatch(notifyWith(`A like for the blog '${blog.title}' by '${blog.author}'`))
   }
 
+  const create = (blog) => {
+    dispatch(createBlog(blog))
+    dispatch(notifyWith(`A new blog '${blog.title}' by '${blog.author}' added`))
+    blogFormRef.current.toggleVisibility()
+  }
   const remove = async (blog) => {
     const ok = window.confirm(
       `Sure you want to remove '${blog.title}' by ${blog.author}`,
@@ -88,7 +93,7 @@ const App = () => {
         <button onClick={logout}>logout</button>
       </div>
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
-        <NewBlog />
+        <NewBlog create={create}/>
       </Togglable>
       <div>
         {blogs.sort(byLikes).map((blog) => (
