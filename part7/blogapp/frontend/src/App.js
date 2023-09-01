@@ -7,8 +7,7 @@ import { loginUser, clearLogin, setLogin } from "./reducers/loginReducer"
 import { initializeUsers } from "./reducers/usersReducer"
 
 import {
-  BrowserRouter as Router,
-  Routes, Route, Link
+  Routes, Route, useMatch
 } from "react-router-dom"
 
 
@@ -20,6 +19,7 @@ import NewBlog from "./components/NewBlog"
 import Notification from "./components/Notification"
 import Togglable from "./components/Togglable"
 import Users from "./components/Users"
+import User from "./components/User"
 
 
 
@@ -29,18 +29,21 @@ const App = () => {
 
   const blogFormRef = useRef()
 
+
   useEffect(() => {
     const user = storageService.loadUser()
     dispatch(setLogin(user))
   }, [])
 
-  const blogs = useSelector(state => state.blog).map(blog => blog)
   
   useEffect(() => {
     dispatch(initializeBlogs())
     dispatch(initializeUsers())
   }, [])
 
+
+  const blogs = useSelector(state => state.blog).map(blog => blog)
+  const users = useSelector(state => state.users)
 
 
   const login = async (username, password) => {
@@ -91,9 +94,9 @@ const App = () => {
   }
 
   const byLikes = (b1, b2) => b2.likes - b1.likes
-  return (
-    <Router>
 
+  return (
+    <div>
       <div>
         <h2>blogs</h2>
 
@@ -104,29 +107,30 @@ const App = () => {
         <button onClick={logout}>logout</button>
       
       </div>
-    <Routes>
-      <Route path="/users" element={<Users />} />
-      <Route path="/" element={
-        <div>
-          <Togglable buttonLabel="new blog" ref={blogFormRef}>
-            <NewBlog create={create}/>
-          </Togglable>
-          <div> 
-            {blogs.sort(byLikes).map((blog) => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                like={() => like(blog)}
-                canRemove={user && blog.user.username === user.username}
-                remove={() => remove(blog)}
-              />
-            ))}
+      <Routes>
+        
+        <Route path="/users/:id" element={<User />} />
+        <Route path="/users" element={<Users users={users} />} />
+        <Route path="/" element={
+          <div>
+            <Togglable buttonLabel="new blog" ref={blogFormRef}>
+              <NewBlog create={create}/>
+            </Togglable>
+            <div> 
+              {blogs.sort(byLikes).map((blog) => (
+                <Blog
+                  key={blog.id}
+                  blog={blog}
+                  like={() => like(blog)}
+                  canRemove={user && blog.user.username === user.username}
+                  remove={() => remove(blog)}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      } />
-    </Routes>
-
-    </Router>
+        } />
+      </Routes>
+    </div>
   )
   
 }

@@ -1,13 +1,17 @@
-import { useSelector } from "react-redux/es/hooks/useSelector"
+import { Link, Routes, Route, useMatch } from "react-router-dom"
 
 
-const Users = () => {
+const Users = ({ users }) => {
 
-  const users = useSelector(state => state.users)
+  
 
-  console.log(users)
+  if (!users) {
+    return null
+  }
 
   return (
+
+    
     <div>
       <h2>Users</h2>
 
@@ -17,11 +21,11 @@ const Users = () => {
             <tr>
               <td>
               </td>
-              <td><strong>blogs created</strong></td>
+              <td><h3>blogs created</h3></td>
             </tr>
             {users.map(user => (
               <tr key={user.id}>
-                <td>{user.name}</td>
+                <td><Link to={`/users/${user.id}`}>{user.name}</Link></td>
                 <td>{user.blogs.length}</td>
               </tr>
             ))}
