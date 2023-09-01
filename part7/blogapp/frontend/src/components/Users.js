@@ -1,17 +1,15 @@
-import { Link, Routes, Route, useMatch } from "react-router-dom"
+import { Link } from "react-router-dom"
+import { useSelector } from "react-redux/es/hooks/useSelector"
 
+const Users = () => {
 
-const Users = ({ users }) => {
-
-  
+  const users = useSelector(state => state.users)
 
   if (!users) {
     return null
   }
 
   return (
-
-    
     <div>
       <h2>Users</h2>
 
@@ -35,6 +33,5 @@ const Users = ({ users }) => {
     </div>
   )
 }
-
 
 export default Users
