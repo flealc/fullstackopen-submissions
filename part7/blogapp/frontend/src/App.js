@@ -4,10 +4,9 @@ import { useDispatch, useSelector } from "react-redux"
 import { notifyWith } from "./reducers/notificationReducer"
 import { initializeBlogs } from "./reducers/blogReducer"
 import { loginUser, clearLogin, setLogin } from "./reducers/loginReducer"
-import { initializeUsers } from "./reducers/usersReducer"
 
 import {
-  Routes, Route
+  Routes, Route, Link
 } from "react-router-dom"
 
 import Blogs from "./components/Blogs"
@@ -31,8 +30,8 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeBlogs())
-    dispatch(initializeUsers())
   }, [])
+
 
   
   const login = async (username, password) => {
@@ -52,6 +51,10 @@ const App = () => {
 
   const user = useSelector(state => state.login)
 
+  const padding = {
+    padding: 5
+  }
+
   if (!user) {
     return (
       <div>
@@ -64,16 +67,16 @@ const App = () => {
 
   return (
     <div>
-      <div>
-        <h2>blogs</h2>
-
-        <Notification />
         <div>
-          {user.name} logged in
+          <Link style={padding} to="/">blogs</Link>
+          <Link style={padding} to="/users">users</Link>
+            {user.name} logged in
+            <button onClick={logout}>logout</button>
         </div>
-        <button onClick={logout}>logout</button>
-      
-      </div>
+
+        <h2>blogs</h2>
+        <Notification />
+        
       <Routes>
         <Route path="/blogs/:id" element={<Blog />} />
         <Route path="/users/:id" element={<User />} />
@@ -84,6 +87,7 @@ const App = () => {
           </div>
         } />
       </Routes>
+      
     </div>
   )
   

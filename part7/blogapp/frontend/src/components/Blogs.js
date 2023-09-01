@@ -2,15 +2,23 @@ import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import Togglable from "./Togglable"
 import NewBlog from "./NewBlog"
-import { useRef } from "react"
+import { useRef, useEffect } from "react"
 import { notifyWith } from "../reducers/notificationReducer"
 import { createBlog, deleteBlog } from "../reducers/blogReducer"
 import { useDispatch } from "react-redux"
+import { initializeUsers } from "../reducers/usersReducer"
 
 const Blogs = () => {
 
-  const user = useSelector(state => state.login)
   const blogs = useSelector(state => state.blog).map(blog => blog)
+
+  useEffect(() => {
+    dispatch(initializeUsers())
+  }, [blogs])
+
+
+  const user = useSelector(state => state.login)
+  
 
   const blogFormRef = useRef()
   const dispatch = useDispatch()

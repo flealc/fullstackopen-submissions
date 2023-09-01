@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 import usersService from "../services/users"
+import storageService from "../services/storage"
 
 const usersSlice = createSlice({
   name: 'users',
@@ -18,5 +19,6 @@ export const initializeUsers = () => {
   }
 }
 
-export const setUsers = usersSlice.actions.setUsers
+
+export const { setUsers } = usersSlice.actions
 export default usersSlice.reducer
