@@ -4,26 +4,26 @@ import storageService from "../services/storage"
 
 const initialState = storageService.loadUser()
 
-const userSlice = createSlice({
-  name: 'user',
+const loginSlice = createSlice({
+  name: 'login',
   initialState,
   reducers: {
-    setUser(state, action) {
+    setLogin(state, action) {
       return action.payload
     },
-    clearUser(state, action) {
+    clearLogin(state, action) {
       return null
     }
   }
 })
 
-export const {setUser, clearUser} = userSlice.actions
+export const {setLogin, clearLogin} = loginSlice.actions
 
 export const loginUser = (username, password) => {
   return async dispatch => {
     const user = await loginService.login({ username, password })
-    dispatch(setUser(user))
+    dispatch(setLogin(user))
     storageService.saveUser(user)
   }
 }
-export default userSlice.reducer
+export default loginSlice.reducer
