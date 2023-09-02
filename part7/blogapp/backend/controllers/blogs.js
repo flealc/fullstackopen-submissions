@@ -8,7 +8,7 @@ router.get('/', async (request, response) => {
   const blogs = await Blog
     .find({})
     .populate('user', { username: 1, name: 1 })
-    .populate('comments')
+    .populate('comments', { content: 1 })
   response.json(blogs)
 })
 
@@ -65,18 +65,22 @@ router.delete('/:id', userExtractor, async (request, response) => {
 })
 
 router.post('/:id/comments', async (request, response) => {
-  const { content, blog } = request.body
-  const comment = new Comment({
-    content, blog
-  })
+  const { content } = request.body
+  const comment = new Comment({ content })
 
-  const commentedBlog = request.blog
+  const blog = await Blog.findById(request.params.id)
 
-  if (!user) {
+  if (!blog) {
     return response.status(401).json({ error: 'operation not permitted' })
   }
+  comment.blog = blog._id
+
+  let createdComment = await comment.save()
   
-  await comment.save()
+  blog.comments = blog.comments.concat(createdComment._id)
+  await blog.save()
+
+  response.status(201).json(createdComment)
 })
 
 module.exports = router

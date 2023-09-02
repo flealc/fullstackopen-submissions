@@ -6,8 +6,8 @@ const schema = mongoose.Schema({
     ref: 'Blog'
   },
   content: {
-      type: String,
-      required: true
+    type: String,
+    required: true
   }
 })
 
