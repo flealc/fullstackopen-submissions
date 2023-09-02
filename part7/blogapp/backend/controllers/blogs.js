@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const Blog = require('../models/blog')
+const Comment = require('../models/comment')
 
 const { userExtractor } = require('../utils/middleware')
 
@@ -61,6 +62,15 @@ router.delete('/:id', userExtractor, async (request, response) => {
   await blog.remove()
   
   response.status(204).end()
+})
+
+router.post('/:id/comments', async (request, response) => {
+  const { content, blog } = request.body
+  const comment = new Comment({
+    content, blog
+  })
+
+  await comment.save()
 })
 
 module.exports = router
