@@ -37,6 +37,12 @@ const Blog = () => {
           </div>
           <div>added by {blog.user && blog.user.name}</div>
         </div>
+        <h3>comments</h3>
+        <ul>
+          {blog.comments.map(comment => (
+            <li key={comment.id}>{comment.content}</li>
+          ))}
+        </ul>
     </div>
   )
 }
