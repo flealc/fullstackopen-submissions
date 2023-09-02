@@ -8,7 +8,7 @@ router.get('/', async (request, response) => {
   const blogs = await Blog
     .find({})
     .populate('user', { username: 1, name: 1 })
-
+    .populate('comments')
   response.json(blogs)
 })
 
@@ -70,6 +70,12 @@ router.post('/:id/comments', async (request, response) => {
     content, blog
   })
 
+  const commentedBlog = request.blog
+
+  if (!user) {
+    return response.status(401).json({ error: 'operation not permitted' })
+  }
+  
   await comment.save()
 })
 
