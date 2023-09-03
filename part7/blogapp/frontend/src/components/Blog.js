@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux/es/hooks/useSelector"
 import { useMatch } from "react-router-dom"
 import { useDispatch } from "react-redux"
-import { likeBlog } from "../reducers/blogReducer"
+import { likeBlog, addComment } from "../reducers/blogReducer"
 import { notifyWith } from "../reducers/notificationReducer"
 
 const Blog = () => {
@@ -17,6 +17,15 @@ const Blog = () => {
   const like = async () => {
     dispatch(likeBlog(blog))
     dispatch(notifyWith(`A like for the blog '${blog.title}' by '${blog.author}'`))
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    const id = blog.id
+    const content = { content: event.target.comment.value }
+    dispatch(addComment(content, id))
+    event.target.comment.value = ''
+    dispatch(notifyWith('Comment added successfully'))
   }
 
   if (!blog) {
@@ -38,6 +47,16 @@ const Blog = () => {
           <div>added by {blog.user && blog.user.name}</div>
         </div>
         <h3>comments</h3>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <input
+              id="comment"
+              placeholder="comment"
+            />
+            <button type="submit">add comment</button>
+          </div>
+          
+        </form>
         <ul>
           {blog.comments.map(comment => (
             <li key={comment.id}>{comment.content}</li>
