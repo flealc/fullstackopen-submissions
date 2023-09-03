@@ -42,7 +42,7 @@ router.put('/:id', async (request, response) => {
 
   let updatedBlog = await Blog.findByIdAndUpdate(request.params.id,  { title, url, author, likes }, { new: true })
 
-  updatedBlog = await Blog.findById(updatedBlog._id).populate('user') 
+  updatedBlog = await Blog.findById(updatedBlog._id).populate('user').populate('comments') 
 
   response.json(updatedBlog)
 })
