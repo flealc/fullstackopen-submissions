@@ -17,8 +17,8 @@ const Notification = () => {
     padding: 10,
     marginBottom: 10,
   }
-
-  return <div style={style}>{info.message}</div>
+  const type = info.type === "error" ? 'ui negative message' : 'ui positive message'
+   return <div className={type}>{info.message}</div>
 }
 
 export default Notification

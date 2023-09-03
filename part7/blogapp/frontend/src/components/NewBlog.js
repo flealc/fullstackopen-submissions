@@ -18,9 +18,9 @@ const BlogForm = ({ create }) => {
     <div>
       <h4>Create a new blog</h4>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          title
+      <form className="ui form" onSubmit={handleSubmit}>
+        <div className="four wide field">
+          <label htmlFor="title">title</label>
           <input
             id="title"
             placeholder="title"
@@ -28,8 +28,8 @@ const BlogForm = ({ create }) => {
             onChange={({ target }) => setTitle(target.value)}
           />
         </div>
-        <div>
-          author
+        <div className="four wide field">
+        <label htmlFor="author">author</label>
           <input
             id="author"
             placeholder="author"
@@ -37,8 +37,8 @@ const BlogForm = ({ create }) => {
             onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
-        <div>
-          url
+        <div className="four wide field">
+        <label htmlFor="url">url</label>
           <input
             id="url"
             placeholder="url"
@@ -46,7 +46,7 @@ const BlogForm = ({ create }) => {
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
-        <button type="submit">create</button>
+        <button type="submit" className="ui basic compact button mini">create</button>
       </form>
     </div>
   )

@@ -1,26 +1,27 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-
 import { notifyWith } from "./reducers/notificationReducer"
 import { initializeBlogs } from "./reducers/blogReducer"
 import { loginUser, clearLogin, setLogin } from "./reducers/loginReducer"
 
 import {
-  Routes, Route, Link
+  Routes, Route, useNavigate 
 } from "react-router-dom"
 
 import Blogs from "./components/Blogs"
 import Blog from "./components/Blog"
 import storageService from "./services/storage"
 
-import LoginForm from "./components/Login"
+import Login from "./components/Login"
 import Notification from "./components/Notification"
 import Users from "./components/Users"
 import User from "./components/User"
+import Menu from "./components/Menu"
+import { initializeUsers } from "./reducers/usersReducer"
 
 
 const App = () => {
-  
+  const navigate = useNavigate()
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -30,6 +31,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeBlogs())
+    dispatch(initializeUsers())
   }, [])
 
 
@@ -37,6 +39,7 @@ const App = () => {
   const login = async (username, password) => {
     try {
       await dispatch(loginUser(username, password))
+      navigate('/')
       dispatch(notifyWith("welcome!"))
     } catch (e) {
       dispatch(notifyWith("wrong username or password", "error"))
@@ -51,31 +54,26 @@ const App = () => {
 
   const user = useSelector(state => state.login)
 
-  const padding = {
-    padding: 5
-  }
 
   if (!user) {
     return (
-      <div>
-        <h2>log in to application</h2>
+      <div className="ui container">
         <Notification />
-        <LoginForm login={login} />
+        <h2>log in to application</h2>
+        <div className="ui container">
+          <Login login={login} />
+        </div>
       </div>
     )
   }
 
   return (
-    <div>
-        <div>
-          <Link style={padding} to="/">blogs</Link>
-          <Link style={padding} to="/users">users</Link>
-            {user.name} logged in
-            <button onClick={logout}>logout</button>
-        </div>
+    <div className="ui container">
+        <Menu user={user}></Menu>
 
-        <h2>blogs</h2>
-        <Notification />
+        <Notification logout={logout}/>
+
+        <h2>Blogs</h2>
         
       <Routes>
         <Route path="/blogs/:id" element={<Blog />} />

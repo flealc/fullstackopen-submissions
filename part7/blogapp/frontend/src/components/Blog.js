@@ -27,7 +27,7 @@ const Blog = () => {
     event.target.comment.value = ''
     dispatch(notifyWith('Comment added successfully'))
   }
-
+  
   if (!blog) {
     return null
   }
@@ -42,21 +42,22 @@ const Blog = () => {
             <a href={blog.url}> {blog.url}</a>{" "}
           </div>
           <div>
-            likes {blog.likes} <button onClick={like}>like</button>
+            likes {blog.likes} <button className="ui basic compact button mini" onClick={like}>like</button>
           </div>
           <div>added by {blog.user && blog.user.name}</div>
         </div>
         <h3>comments</h3>
-        <form onSubmit={handleSubmit}>
+        <form className="ui mini form" onSubmit={handleSubmit}>
           <div>
             <input
+              className="field inline two wide"
               id="comment"
               placeholder="comment"
             />
-            <button type="submit">add comment</button>
+            <button type="submit" className="ui basic compact button small">add comment</button>
           </div>
-          
         </form>
+
         <ul>
           {blog.comments.map(comment => (
             <li key={comment.id}>{comment.content}</li>

@@ -10,17 +10,17 @@ const LoginForm = ({ login }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        username
+    <form className="ui form small" onSubmit={handleSubmit}>
+      <div className="four wide field">
+      <label htmlFor="username">username</label>
         <input
           id="username"
           value={username}
           onChange={({ target }) => setUsername(target.value)}
         />
       </div>
-      <div>
-        password
+      <div className="four wide field">
+      <label htmlFor="password">password</label>
         <input
           id="password"
           type="password"
@@ -28,7 +28,7 @@ const LoginForm = ({ login }) => {
           onChange={({ target }) => setPassword(target.value)}
         />
       </div>
-      <button id="login-button" type="submit">
+      <button className="ui basic compact button small" id="login-button" type="submit">
         login
       </button>
     </form>

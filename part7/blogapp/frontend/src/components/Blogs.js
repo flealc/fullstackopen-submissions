@@ -38,11 +38,11 @@ const Blogs = () => {
       dispatch(notifyWith(`The blog' ${blog.title}' by '${blog.author} removed`))
     }
   }
-  const style = {
+  /* const style = {
     marginBottom: 2,
     padding: 5,
     borderStyle: "solid",
-  }
+  } */
 
 
   const byLikes = (b1, b2) => b2.likes - b1.likes
@@ -56,14 +56,18 @@ const Blogs = () => {
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <NewBlog create={create}/>
       </Togglable>
-      {blogs.sort(byLikes).map((blog) => (
-        <div key={blog.id} style={style}>
-          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-          {' '}
-          {(user && blog.user.username === user.username) && <button onClick={() => remove(blog)}>delete</button>}
-          {' '}
-        </div>
-      ))}
+      <div className="ui divided list">
+        {blogs.sort(byLikes).map((blog) => (
+          <div className="item"  key={blog.id}>
+            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+            {' '}
+            {(user && blog.user.username === user.username) && <button className="ui basic compact button mini" onClick={() => remove(blog)}>delete</button>}
+            {' '}
+            <div className="description">{blog.likes} likes</div>
+          </div>
+        ))}
+      </div>
+     
     </div>
   )
 }

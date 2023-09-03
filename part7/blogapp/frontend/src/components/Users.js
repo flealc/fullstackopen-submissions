@@ -3,7 +3,8 @@ import { useSelector } from "react-redux/es/hooks/useSelector"
 
 const Users = () => {
 
-  const users = useSelector(state => state.users)
+
+   const users = useSelector(state => state.users)
 
   if (!users) {
     return null
